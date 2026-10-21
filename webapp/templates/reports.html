@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Model Reports - FraudGuard ML{% endblock %}
+{% block content %}
+<h3 class="mb-1">Model Evaluation Reports</h3>
+<p class="text-muted mb-4">Detailed performance comparison and diagnostic plots for all trained models (Chapter 6 material).</p>
+
+<div class="card p-3 mb-4">
+  <h6 class="mb-3">Metric Comparison Table</h6>
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm">
+      <thead><tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1-Score</th><th>ROC-AUC</th><th>FP</th><th>FN</th></tr></thead>
+      <tbody>
+      {% for name, m in all_results.items() %}
+        <tr>
+          <td class="fw-semibold">{{ name }}</td>
+          <td>{{ (m.accuracy*100)|round(2) }}%</td>
+          <td>{{ (m.precision*100)|round(2) }}%</td>
+          <td>{{ (m.recall*100)|round(2) }}%</td>
+          <td>{{ (m.f1_score*100)|round(2) }}%</td>
+          <td>{{ (m.roc_auc*100)|round(2) }}%</td>
+          <td>{{ m.false_positives }}</td>
+          <td>{{ m.false_negatives }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row g-3">
+  {% for f in plot_files %}
+  <div class="col-md-6">
+    <div class="card p-2">
+      <img src="/plots/{{ f }}" class="img-fluid rounded" alt="{{ f }}">
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

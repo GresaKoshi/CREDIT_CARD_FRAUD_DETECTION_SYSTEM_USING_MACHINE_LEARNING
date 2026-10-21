@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Transactions - FraudGuard ML{% endblock %}
+{% block content %}
+<h3 class="mb-1">Transaction Monitor</h3>
+<p class="text-muted mb-4">Browse held-out test transactions scored by the ensemble model in real time.</p>
+
+<div class="btn-group mb-3">
+  <a href="/transactions?filter=all" class="btn btn-sm {{ 'btn-primary' if filter_flag=='all' else 'btn-outline-primary' }}">All</a>
+  <a href="/transactions?filter=flagged" class="btn btn-sm {{ 'btn-primary' if filter_flag=='flagged' else 'btn-outline-primary' }}">Flagged by Model</a>
+  <a href="/transactions?filter=fraud" class="btn btn-sm {{ 'btn-primary' if filter_flag=='fraud' else 'btn-outline-primary' }}">Confirmed Fraud</a>
+</div>
+
+<div class="card p-3">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead><tr><th>Transaction ID</th><th>Amount (scaled)</th><th>Fraud Probability</th><th>Model Prediction</th><th>Actual</th><th>Risk</th></tr></thead>
+      <tbody>
+        {% for r in records %}
+        <tr>
+          <td>{{ r.transaction_id }}</td>
+          <td>{{ "%.3f"|format(r.Amount_scaled) }}</td>
+          <td>{{ (r.fraud_probability*100)|round(2) }}%</td>
+          <td>{% if r.predicted == 1 %}<span class="badge bg-danger">Fraud</span>{% else %}<span class="badge bg-success">Legit</span>{% endif %}</td>
+          <td>{% if r.actual == 1 %}<span class="badge bg-danger">Fraud</span>{% else %}<span class="badge bg-secondary">Legit</span>{% endif %}</td>
+          <td><span class="badge badge-risk-{{ r.risk }}">{{ r.risk }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <nav>
+    <ul class="pagination pagination-sm mb-0">
+      {% for p in range(1, total_pages+1) %}
+        {% if p == page %}
+        <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+        {% elif p <= 3 or p > total_pages - 3 or (p >= page-1 and p <= page+1) %}
+        <li class="page-item"><a class="page-link" href="/transactions?filter={{ filter_flag }}&page={{ p }}">{{ p }}</a></li>
+        {% elif p == 4 or p == total_pages - 3 %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
+  <div class="text-muted small mt-2">{{ total }} transactions total &middot; page {{ page }} of {{ total_pages }}</div>
+</div>
+{% endblock %}

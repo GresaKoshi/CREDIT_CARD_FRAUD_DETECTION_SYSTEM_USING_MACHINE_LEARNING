@@ -1,0 +1,170 @@
+PERMBLEDHJE E NDRYSHIMEVE — Tema_E_Diplomes_GresaKoshi_korrigjuar.docx
+(kunder bazes: Tema_E_Diplomes_GresaKoshi.docx)
+
+RENDESISHME: Ky korrigjim eshte per shqyrtim te dokumentit dhe NUK duhet te
+paraqitet si miratim perfundimtar per mbrojtje. Verifikimi i kodit dhe
+funksionalitetit nga autorja mbetet gjithashtu i nevojshem.
+
+===========================================================================
+1. FAQET HYRESE / KOPERTINA
+===========================================================================
+- Emri i mentorit u korrigjua nga "Perbreza" ne "Rrezart Prebreza" ne te
+  tria vendet (koperta 1, koperta 2, Deklarata).
+- Ne Deklarate, referencat ndaj "temes/tezes se masterit" u hoqen/korrigjuan
+  per t'iu pershtatur nje teme Bachelor (verifikuar: nuk gjendet me asnje
+  perdorim i "master" ne dokument).
+- Koperta u konsolidua ne 2 faqe (si ne shembullin strukturor), pa faqe te
+  treta te panevojshme te shperndara.
+
+===========================================================================
+2. NUMERIMI I FAQEVE DHE TABELA E PERMBAJTJES
+===========================================================================
+- Faqet hyrese (Deklarata, Mirenjohje, Abstrakt, Abstract, Permbajtja,
+  Lista e Figurave, Lista e Tabelave, Lista e Shkurtimeve) numerohen me
+  numra romakë te vegjel (i–x), duke filluar nga Deklarata = "i".
+  Koperta (2 faqet e para) mbetet e panumeruar.
+- Kapitulli I (Hyrje) fillon ne faqen arabike "1" dhe numerimi vazhdon pa
+  nderprerje deri ne fund te dokumentit (Referencat, Shtojca A).
+- U rradhit sipas struktures: Deklarata -> Mirenjohje -> Abstrakt (AL) ->
+  Abstract (EN) -> Permbajtja -> Lista e Figurave -> Lista e Tabelave ->
+  Lista e Shkurtimeve.
+- U ndertua nje Tabele e Permbajtjes e VERTETE (fushe Word TOC, jo tekst i
+  shkruar dore), me hyperlinke dhe numra faqesh te sakte per te gjitha
+  nenkapitujt (verifikuar disa ze me pozicionin real ne PDF: p.sh. "8.
+  Konkluzione...59" perputhet me faqen aktuale 59; "REFERENCAT...62"
+  perputhet me faqen aktuale 62).
+- U ndertuan gjithashtu Lista e Figurave dhe Lista e Tabelave si fusha Word
+  te vertetuara (jo manuale), me numra faqesh automatike.
+- Nuk u gjeten faqe bosh ose pothuajse-bosh ne dokumentin final (verifikuar
+  ne te gjitha 77 faqet e PDF-se se eksportuar).
+- Nivelet e titujve/nentitujve u unifikuan (Heading 3/4/5 sipas numrit te
+  pikave ne numrin e nenkapitullit) per te siguruar qe TOC-ja te renderohet
+  saktë.
+
+===========================================================================
+3. ABSTRAKTET (AL DHE EN)
+===========================================================================
+- Te dy abstraktet u rishkruan ne kohen e kryer (jo te ardhme/propozuese),
+  duke pershkruar: problemin, dataset-in (284.807 transaksione, 492
+  mashtruese, burimi ULB/Kaggle), pastrimin (heqja e 1.081 rreshtave te
+  perseritur), metodat/modelet (Random Forest, XGBoost, ensemble me votim
+  te bute), rezultatet kryesore te matura (accuracy 0,9995 per te tre
+  modelet, F1/ROC-AUC/precision/recall te ensemble-it), Average Precision
+  me e larte per XGBoost (jo per ensemble-in), prototipin web, dhe
+  kufizimin kryesor (nuk eshte sistem bankar ne prodhim).
+- Asnje shifer ose rezultat i ri nuk u shpik; te gjitha numrat vijne nga
+  outputs/evaluation_results_final.json (i verifikuar te perputhet
+  saktesisht me Tabelen 6.1 ne dokument).
+
+===========================================================================
+4. HIPOTEZAT DHE KRAHASIMI ME METODAT TRADICIONALE
+===========================================================================
+- U hoq cdo pretendim i pambeshtetur i tipit "H0 rrezohet" si perfundim
+  statistikor, pasi nuk ishte kryer asnje test statistikor mbi te njejtin
+  split kunder nje metode tradicionale ne eksperimentin origjinal.
+- Ne vend te kesaj, u shtua ne kodin e projektit nje modul OPSIONAL
+  (src/compare_baselines.py) qe lejon autoren te kryeje vete nje krahasim
+  te vertete statistikor (testi McNemar) kunder dy baza tradicionale
+  (rregull i thjeshte mbi Amount, dhe regresion logjistik), nese deshiron
+  te perfshije nje perfundim te tille. Kjo eshte deklaruar qarte ne
+  Shtojcen A si "e shtuar pas eksperimentit", jo pjese e rezultateve
+  origjinale te raportuara.
+- Nuk u be asnje pretendim superioriteti mbi metodat tradicionale pa prova,
+  dhe AUC-ja nuk interpretohet me si "provë" superioriteti ne çdo prag.
+
+===========================================================================
+5. INTERPRETIMI DHE RIPRODHUESHMERIA
+===========================================================================
+- "Accuracy nje metrike e pavlefshme" u zevendesua kudo me formulim te
+  sakte: "accuracy eshte nje metrike e pamjaftueshme si tregues i vetem"
+  (Kapitulli VI, seksioni 6.1) — dallim i qarte nga "e pavlefshme".
+- U konfirmua se peshimi sipas klases (class weighting) eshte metoda
+  aktuale e trajtimit te pabarazise, ndersa SMOTE/undersampling mbeten te
+  paraqitura vetem si alternativa te diskutuara (verifikuar: 4 permendje,
+  te gjitha te sakta ne kete kuptim).
+- Shenimi mbi riprodhueshmerine (Kapitulli VII / Shtojca A) dokumenton
+  tashme: random_state=2026 (i deklaruar qarte si vlere e fiksuar per
+  versionin e rikrijuar, JO vlera origjinale — tema nuk e specifikon
+  seed-in origjinal), perdorimin e RobustScaler brenda nje Pipeline
+  scikit-learn (per te shmangur data leakage), dhe versionet e librarive
+  (requirements.txt).
+- Tabela 6.1: u verifikua qe Average Precision e XGBoost (0,8273) eshte me
+  e larte se ajo e Ensemble-it (0,8216); asnje vend ne dokument nuk
+  pretendon qe ensemble-i eshte "me i mire ne cdo metrike" — teksti
+  specifikon vetem F1-score dhe ROC-AUC si metrikat ku ensemble-i kalon
+  modelet individuale.
+
+===========================================================================
+6. PROTOTIPI WEB DHE MATERIALET PRAKTIKE
+===========================================================================
+- U ruajt dallimi i qarte: prototip demonstrues mbi grup testimi statik,
+  JO sistem bankar real, pa rrjedhe reale transaksionesh.
+- Matja e kohes se pergjigjes mbi 5 kerkesa lokale eshte paraqitur si
+  "matje funksionale/paraprake", JO si test ngarkese/skalabiliteti; u
+  hoq/zbutur pretendimi qe kjo "konfirmon" mungesen e pengesave praktike
+  ne prodhim (nuk u gjet me ne dokument).
+- Fusha "Amount" ne nderfaqe eshte etiketuar shprehimisht si "shuma e
+  standardizuar (transformuar me RobustScaler)", jo si vlere reale monetare.
+- MATERIALET PRAKTIKE: u krijuan me te vertete (jo vetem u pershkruan) ne
+  C:\Users\admin\Documents\projekt:
+    - README.md, requirements.txt, config.py
+    - src/preprocess_final.py, src/train_final.py (metodologjia e
+      pershkruar: RobustScaler+Pipeline, class weighting, random_state=2026,
+      5-fold CV + kerkim hiperparametrash)
+    - src/compare_baselines.py (krahasimi opsional + testi McNemar)
+    - results/thesis_reported_metrics.json (numrat e Tabeles 6.1, te
+      etiketuar qarte si "te raportuara ne teme")
+    - tests/test_smoke.py (5 teste smoke, TE GJITHA TE KALUARA ne
+      ekzekutim real: ekzistenca e dataset-it, ngarkimi i modeleve finale
+      dhe parashikimi, prezenca e metrikave, dhe pergjigja e Flask app-it)
+  Shih README.md per shpjegim te plote te dy "gjenerative" te kodit
+  (eksploruese origjinale kunder te rikrijuarës finale) dhe per limitimet.
+
+===========================================================================
+7. GJUHA, STILI DHE BIBLIOGRAFIA
+===========================================================================
+- U kalua nje leximi gjuhesor per te unifikuar kohen foljore dhe per te
+  zbutur formulime absolute te pambeshtetura.
+- Bibliografia (13 referenca) eshte e formatuar sipas APA 7 (identim i
+  varur, italik per emrin e revistes + volumin), me referenca te ndara
+  qarte nga Kapitulli VIII (Konkluzione).
+- Nuk u shpik asnje DOI, URL, autor apo vit; referencat ekzistuese u lane
+  te pandryshuara ne permbajtje, vetem formati u unifikua.
+
+===========================================================================
+8. KONTROLLI PERFUNDIMTAR I PLOTE
+===========================================================================
+- U eksportua PDF final permes LibreOffice nga docx-i i korrigjuar
+  (77 faqe, 0 faqe bosh, verifikuar programatikisht).
+- U kryqe-verifikuan disa zera te TOC kunder poziconeve reale te faqeve ne
+  PDF (perputhje e sakte).
+- Nuk u ndryshua asnje permbajtje teknike e sakte vetem per t'iu
+  ngjasuar shembullit strukturor te perdorur si referencë paraqitjeje.
+
+===========================================================================
+ÇKA DUHET TE VERIFIKOJE/PLOTESOJE AUTORJA
+===========================================================================
+1. random_state=2026 dhe versionet e librarive ne requirements.txt jane
+   vendosur per versionin e RIKRIJUAR te kodit (sepse tema nuk i
+   specifikon keto per eksperimentin origjinal). Nese autorja ka
+   informacionin origjinal diku tjeter, duhet ta perditesoje.
+2. Skriptet e rikrijuara (preprocess_final.py, train_final.py) NUK u
+   ekzekutuan plotesisht (per te mos rrezikuar ndryshimin e rezultateve
+   apo per te shmangur nje trajnim te gjate). Modelet "_final" ekzistuese
+   (rf_final.joblib, xgb_final.joblib) dhe Tabela 6.1 mbeten rezultatet e
+   raportuara; nese autorja deshiron t'i rigjeneroje me kodin e ri, duhet
+   ta ekzekutoje vete dhe te krahasoje.
+3. src/compare_baselines.py eshte gati per t'u ekzekutuar, por NUK u
+   ekzekutua (do te kerkonte rindarjen train/test dhe stervitje shtese).
+   Nese autorja deshiron nje perfundim te vertete statistikor H0/H1, duhet
+   ta ekzekutoje vete dhe te shtoje rezultatin ne Kapitullin VIII, duke e
+   deklaruar qarte si analize e shtuar pas eksperimentit origjinal.
+4. Kodi origjinal qe prodhoi rf_final.joblib/xgb_final.joblib me metodologjine
+   e pershkruar (RobustScaler+Pipeline+class weighting+random_state=2026)
+   NUK u gjet ne kompjuter. Nese autorja e ka ne nje vend tjeter (noteook,
+   USB, kompjuter tjeter), do te ishte mire ta beje pjese te projektit ne
+   vend te versionit te rikrijuar.
+5. Verifikimi final i kodit dhe funksionalitetit (jo vetem i dokumentit)
+   mbetet pergjegjesi e autores para dorezimit/mbrojtjes.
+6. Ky korrigjim eshte VETEM per shqyrtim te dokumentit — NUK eshte
+   miratim perfundimtar per mbrojtje.

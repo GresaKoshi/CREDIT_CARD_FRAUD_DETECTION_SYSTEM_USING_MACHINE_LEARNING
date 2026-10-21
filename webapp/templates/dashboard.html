@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - FraudGuard ML{% endblock %}
+{% block content %}
+<h3 class="mb-1">Real-Time Monitoring Dashboard</h3>
+<p class="text-muted mb-4">Overview of transaction volume, fraud detection performance, and currently flagged activity.</p>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="stat-card bg-brand">
+      <div class="stat-label">Total Transactions</div>
+      <div class="stat-value">{{ "{:,}".format(stats.total_transactions) }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card bg-danger-grad">
+      <div class="stat-label">Confirmed Fraud Cases</div>
+      <div class="stat-value">{{ stats.fraud_transactions }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card bg-warn-grad">
+      <div class="stat-label">Fraud Rate</div>
+      <div class="stat-value">{{ stats.fraud_rate }}%</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card bg-success-grad">
+      <div class="stat-label">Ensemble Model Accuracy</div>
+      <div class="stat-value">{{ (metrics.accuracy * 100) | round(2) }}%</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-8">
+    <div class="card p-3 h-100">
+      <h6 class="mb-3">Model Performance &mdash; Ensemble (Random Forest + XGBoost, soft voting)</h6>
+      <div class="row text-center">
+        <div class="col">
+          <div class="fs-4 fw-bold">{{ (metrics.precision*100)|round(2) }}%</div>
+          <div class="text-muted small">Precision</div>
+        </div>
+        <div class="col">
+          <div class="fs-4 fw-bold">{{ (metrics.recall*100)|round(2) }}%</div>
+          <div class="text-muted small">Recall</div>
+        </div>
+        <div class="col">
+          <div class="fs-4 fw-bold">{{ (metrics.f1_score*100)|round(2) }}%</div>
+          <div class="text-muted small">F1-Score</div>
+        </div>
+        <div class="col">
+          <div class="fs-4 fw-bold">{{ (metrics.roc_auc*100)|round(2) }}%</div>
+          <div class="text-muted small">ROC-AUC</div>
+        </div>
+        <div class="col">
+          <div class="fs-4 fw-bold text-danger">{{ metrics.false_negatives }}</div>
+          <div class="text-muted small">False Negatives</div>
+        </div>
+        <div class="col">
+          <div class="fs-4 fw-bold text-warning">{{ metrics.false_positives }}</div>
+          <div class="text-muted small">False Positives</div>
+        </div>
+      </div>
+      <canvas id="modelCompareChart" class="mt-4" height="90"></canvas>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 h-100">
+      <h6 class="mb-3">Test Set Summary</h6>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between"><span>Held-out test transactions</span><strong>{{ "{:,}".format(stats.test_set_size) }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>Flagged as suspicious</span><strong>{{ stats.flagged_in_test }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>True positives</span><strong>{{ metrics.true_positives }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span>True negatives</span><strong>{{ "{:,}".format(metrics.true_negatives) }}</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="card p-3">
+  <h6 class="mb-3">Latest Flagged Transactions <span class="text-muted small">(highest fraud probability, held-out test set)</span></h6>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead><tr><th>Transaction ID</th><th>Amount (scaled)</th><th>Fraud Probability</th><th>Actual Label</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for tx in flagged %}
+        <tr>
+          <td>{{ tx.transaction_id }}</td>
+          <td>{{ "%.3f"|format(tx.Amount_scaled) }}</td>
+          <td>
+            <div class="progress" style="height: 8px; width:120px;">
+              <div class="progress-bar bg-danger" style="width: {{ (tx.fraud_probability*100)|round(1) }}%"></div>
+            </div>
+            <span class="small">{{ (tx.fraud_probability*100)|round(2) }}%</span>
+          </td>
+          <td>{% if tx.actual == 1 %}<span class="badge bg-danger">Fraud</span>{% else %}<span class="badge bg-secondary">Legit</span>{% endif %}</td>
+          <td><span class="badge bg-danger">Flagged</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+const ctx = document.getElementById('modelCompareChart');
+const results = {{ all_results | tojson }};
+const labels = Object.keys(results);
+const metricsKeys = ['accuracy','precision','recall','f1_score','roc_auc'];
+const colors = ['#1f4e8c','#d9534f','#43a06a','#e0a531'];
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: metricsKeys.map(k => k.replace('_',' ').toUpperCase()),
+    datasets: labels.map((name, i) => ({
+      label: name,
+      data: metricsKeys.map(k => (results[name][k]*100).toFixed(2)),
+      backgroundColor: colors[i % colors.length]
+    }))
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom' } },
+    scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: '%' } } }
+  }
+});
+</script>
+{% endblock %}

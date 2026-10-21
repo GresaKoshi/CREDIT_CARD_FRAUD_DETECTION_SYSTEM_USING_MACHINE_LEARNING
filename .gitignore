@@ -1,0 +1,12 @@
+# Dataset too large for GitHub (>100 MB) - download from Kaggle
+data/creditcard.csv
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local tool settings
+.claude/
+
+# Word documents (kept local)
+*.docx

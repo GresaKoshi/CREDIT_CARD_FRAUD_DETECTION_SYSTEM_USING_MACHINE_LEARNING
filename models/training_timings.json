@@ -1,0 +1,6 @@
+{
+  "logistic_regression": 0.95,
+  "random_forest": 26.04,
+  "xgboost": 6.44,
+  "ensemble": 38.07
+}

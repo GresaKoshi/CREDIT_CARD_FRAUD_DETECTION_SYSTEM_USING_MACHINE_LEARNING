@@ -1,0 +1,90 @@
+{
+  "Logistic Regression": {
+    "accuracy": 0.9743,
+    "precision": 0.0581,
+    "recall": 0.9184,
+    "f1_score": 0.1094,
+    "roc_auc": 0.9698,
+    "avg_precision": 0.7249,
+    "confusion_matrix": [
+      [
+        55406,
+        1458
+      ],
+      [
+        8,
+        90
+      ]
+    ],
+    "false_positives": 1458,
+    "false_negatives": 8,
+    "true_positives": 90,
+    "true_negatives": 55406
+  },
+  "Random Forest": {
+    "accuracy": 0.9985,
+    "precision": 0.5455,
+    "recall": 0.8571,
+    "f1_score": 0.6667,
+    "roc_auc": 0.9799,
+    "avg_precision": 0.816,
+    "confusion_matrix": [
+      [
+        56794,
+        70
+      ],
+      [
+        14,
+        84
+      ]
+    ],
+    "false_positives": 70,
+    "false_negatives": 14,
+    "true_positives": 84,
+    "true_negatives": 56794
+  },
+  "XGBoost": {
+    "accuracy": 0.9992,
+    "precision": 0.7227,
+    "recall": 0.8776,
+    "f1_score": 0.7926,
+    "roc_auc": 0.9795,
+    "avg_precision": 0.8752,
+    "confusion_matrix": [
+      [
+        56831,
+        33
+      ],
+      [
+        12,
+        86
+      ]
+    ],
+    "false_positives": 33,
+    "false_negatives": 12,
+    "true_positives": 86,
+    "true_negatives": 56831
+  },
+  "Ensemble (Voting)": {
+    "accuracy": 0.9988,
+    "precision": 0.5959,
+    "recall": 0.8878,
+    "f1_score": 0.7131,
+    "roc_auc": 0.9743,
+    "avg_precision": 0.8704,
+    "confusion_matrix": [
+      [
+        56805,
+        59
+      ],
+      [
+        11,
+        87
+      ]
+    ],
+    "false_positives": 59,
+    "false_negatives": 11,
+    "true_positives": 87,
+    "true_negatives": 56805
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "n_transactions": 283726,
+  "n_features": 31,
+  "n_fraud": 473,
+  "n_legit": 283253,
+  "fraud_rate_pct": 0.1667,
+  "n_duplicates_removed": 1081
+}
