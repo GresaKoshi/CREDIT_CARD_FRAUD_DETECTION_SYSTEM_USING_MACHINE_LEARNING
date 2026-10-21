@@ -1,116 +1,219 @@
-# Credit Card Fraud Detection System — Machine Learning
+# Credit Card Fraud Detection System Using Machine Learning
 
-Practical materials accompanying the Bachelor thesis *"Sistemi i Zbulimit të
-Mashtrimeve me Kartë Krediti duke Përdorur Mësimin Makinerik"* (Gresa Koshi,
-UNI — Universum International College).
+A machine learning project that detects fraudulent credit card transactions, built on the public [Credit Card Fraud Detection dataset](https://www.kaggle.com/mlg-ulb/creditcardfraud) from the ULB Machine Learning Group / Worldline (via Kaggle).
 
-## What this is
+The project covers data preprocessing, exploratory data analysis, model training and evaluation, and a Flask web prototype that demonstrates fraud detection with the trained models.
 
-A fraud-detection pipeline trained on the public [Credit Card Fraud
-Detection dataset](https://www.kaggle.com/mlg-ulb/creditcardfraud) (ULB
-Machine Learning Group / Worldline, via Kaggle), plus a Flask web prototype
-that serves the trained models over a static test set for demonstration.
-**It is not a real banking system**: it does not connect to a live
-transaction stream, and all data shown in the prototype comes from the
-dataset's held-out test split.
+> **Note:** This is a demonstration prototype, not a real banking system. It does not connect to live transaction streams. All transactions shown in the web prototype come from the held-out test set.
 
-## Two generations of code in this repo
+## Features
 
-- **`src/preprocess.py`, `src/train.py`** — the original exploratory
-  scripts (StandardScaler fit before the split, SMOTE oversampling,
-  `random_state=42`). These produced the early
-  `models/random_forest.joblib`, `models/xgboost.joblib`,
-  `models/ensemble.joblib` artifacts and `outputs/evaluation_results.json`.
-- **`src/preprocess_final.py`, `src/train_final.py`** — a reconstructed
-  pipeline matching the methodology described in the thesis (RobustScaler
-  fit only on the training fold inside a `Pipeline`, class weighting
-  instead of resampling, 5-fold stratified cross-validation with a
-  hyperparameter grid search, `random_state=2026`). **The already-committed
-  `models/rf_final.joblib`, `models/xgb_final.joblib`, and
-  `outputs/evaluation_results_final.json` (which match Table 6.1 of the
-  thesis) come from the original experiment run, not from re-running this
-  reconstructed script** — the original code was not recovered, so this
-  version documents the methodology and lets it be re-run, without
-  overwriting the actual reported artifacts. See "Academic honesty" below.
+- Exploratory data analysis and visualizations
+- Preprocessing for highly imbalanced transaction data
+- Random Forest and XGBoost classifiers
+- Soft-voting ensemble model
+- Evaluation with metrics suited to imbalanced classification
+- Reconstructed training pipeline with scaling, class weighting, hyperparameter search, and stratified cross-validation
+- Flask web prototype for interactive demonstration
+- Basic smoke tests
 
-## Project layout
+## Dataset
+
+The original dataset contains **284,807 transactions**, of which **492 are fraudulent** (about **0.173%**).
+
+It includes anonymized numerical features (`V1`–`V28`), a `Time` field, an `Amount` field, and a `Class` label (1 = fraud, 0 = legitimate).
+
+The dataset is **not included** in this repository. Download it from [Kaggle](https://www.kaggle.com/mlg-ulb/creditcardfraud) and place it at:
 
 ```
-config.py                  central paths, RANDOM_STATE=2026, TEST_SIZE
-requirements.txt           pinned library versions used for the reconstructed code
-data/creditcard.csv        raw dataset (not included in the repo — see below)
-src/
-  eda.py                   exploratory plots (Chapter IV/VI figures)
-  preprocess.py             original exploratory preprocessing (StandardScaler + SMOTE)
-  train.py                  original exploratory training
-  evaluate.py                evaluation + plots for the exploratory models
-  preprocess_final.py       reconstructed preprocessing (RobustScaler + Pipeline, no SMOTE)
-  train_final.py            reconstructed training (class weighting, grid search + 5-fold CV)
-  compare_baselines.py      OPTIONAL: rule-based + logistic-regression baselines vs.
-                             McNemar's test — not part of the original experiment,
-                             see the docstring in that file
-models/                    trained model artifacts (.joblib) + test split (X_test.csv, y_test.csv)
-outputs/                   EDA summaries, evaluation JSON, generated plots
-results/thesis_reported_metrics.json   Table 6.1 numbers, explicitly labeled as
-                             "reported in the thesis" (see file for details)
-webapp/                    Flask prototype (app.py, templates/, static/)
-tests/test_smoke.py        basic smoke tests (data/model/webapp presence + sanity)
+data/creditcard.csv
 ```
 
-## Setup
+## Project Structure
+
+```
+.
+├── config.py
+├── requirements.txt
+├── data/
+│   └── creditcard.csv          (download separately)
+├── src/
+│   ├── eda.py
+│   ├── preprocess.py
+│   ├── train.py
+│   ├── evaluate.py
+│   ├── preprocess_final.py
+│   ├── train_final.py
+│   └── compare_baselines.py
+├── models/
+│   ├── rf_final.joblib
+│   ├── xgb_final.joblib
+│   ├── ensemble.joblib
+│   ├── X_test.csv
+│   └── y_test.csv
+├── outputs/
+│   ├── plots/
+│   ├── screenshots/
+│   ├── evaluation_results.json
+│   └── evaluation_results_final.json
+├── results/
+│   └── thesis_reported_metrics.json
+├── webapp/
+│   ├── app.py
+│   └── templates/
+└── tests/
+    └── test_smoke.py
+```
+
+## Installation
+
+Requires Python and `pip`. Using a virtual environment is recommended.
+
+**1. Clone the repository**
 
 ```bash
+git clone https://github.com/GresaKoshi/CREDIT_CARD_FRAUD_DETECTION_SYSTEM_USING_MACHINE_LEARNING.git
+cd CREDIT_CARD_FRAUD_DETECTION_SYSTEM_USING_MACHINE_LEARNING
+```
+
+**2. Create and activate a virtual environment**
+
+Windows (PowerShell):
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+Linux / macOS:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**3. Install dependencies**
+
+```bash
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Place the dataset at `data/creditcard.csv` (not committed — download it
-from Kaggle; the thesis documents the file as 284,807 transactions with
-492 labeled fraud).
+The versions in `requirements.txt` match the reconstructed implementation. They are not verified records of the original experiment's environment.
 
-## Running things
+**4. Download the dataset**
+
+Download `creditcard.csv` from [Kaggle](https://www.kaggle.com/mlg-ulb/creditcardfraud) and save it as `data/creditcard.csv`.
+
+## Usage
+
+Run all commands from the repository root.
+
+### Exploratory data analysis
 
 ```bash
-# exploratory EDA plots
 python src/eda.py
+```
 
-# reconstructed preprocessing + training (writes *_reconstructed.joblib,
-# does NOT touch the existing rf_final.joblib / xgb_final.joblib)
+Generates summary statistics and visualizations.
+
+### Model training
+
+```bash
 python src/train_final.py
+```
 
-# optional baseline comparison + McNemar's test (see file docstring for
-# what it does and does not prove)
+Runs the reconstructed training workflow (preprocessing and model training). It saves its artifacts separately, so the existing final model files are not overwritten. See `config.py` and `src/train_final.py` for exact output paths.
+
+### Baseline comparison (optional)
+
+```bash
 python src/compare_baselines.py
+```
 
-# smoke tests
+Compares model predictions with selected baseline approaches, including McNemar's test. This script was added after the original experiment. Its conclusions apply only to its data, evaluation design, and assumptions, and do not by themselves prove general superiority over traditional fraud-detection systems.
+
+### Tests
+
+```bash
 python -m pytest tests/ -v
-# or, without pytest:
-python tests/test_smoke.py
+```
 
-# web prototype
+or, without `pytest`:
+
+```bash
+python tests/test_smoke.py
+```
+
+These are basic smoke tests, not a full validation suite, load test, or proof of production readiness. Tests that depend on the dataset or model files need those files to be present.
+
+### Web prototype
+
+```bash
 python webapp/app.py
 ```
 
-## Academic honesty
+Then open **http://127.0.0.1:5057** in your browser.
 
-The source code in `preprocess_final.py` / `train_final.py` was
-reconstructed from the methodology, parameters, and results documented in
-the thesis; it is not the original experiment's code, which was not
-available when this repository was assembled. The metrics in
-`results/thesis_reported_metrics.json` (and Table 6.1 / Table 5.4 of the
-thesis) are the original run's reported results and are not claimed to be
-reproduced by this reconstructed code. `requirements.txt` lists the
-versions this reconstructed code was written and tested against, not the
-original experiment's library versions, which are not documented in the
-thesis.
+The prototype makes predictions with the trained models on static test data. It is not connected to a bank, payment processor, or live transaction stream.
+
+## Models
+
+- **Random Forest:** an ensemble of decision trees that classifies transactions based on learned patterns.
+- **XGBoost:** a gradient-boosting algorithm that builds trees sequentially to improve predictive performance.
+- **Soft-voting ensemble:** combines the predicted probabilities of multiple models into a final prediction.
+
+## Evaluation Metrics
+
+Accuracy alone is misleading for fraud detection: a model that labels every transaction as legitimate would still score above 99.8%. This project therefore uses:
+
+- **Precision:** the share of flagged transactions that are actually fraudulent.
+- **Recall:** the share of actual frauds that are correctly detected.
+- **F1-score:** the harmonic mean of precision and recall.
+- **Average Precision (PR-AUC):** summarizes the precision-recall trade-off; especially useful for rare positive classes.
+- **ROC-AUC:** how well the model separates the two classes across all thresholds.
+- **Confusion matrix:** counts of true/false positives and negatives.
+
+The metrics in `results/thesis_reported_metrics.json` are previously reported experiment results. They should not be described as independently reproduced by the reconstructed pipeline unless that pipeline has been run and its results verified.
+
+## Data Processing and Leakage Prevention
+
+The reconstructed pipeline fits all preprocessing on training data only, using a scikit-learn `Pipeline`. Fitting a scaler on the full dataset before splitting would leak test-set information into training.
+
+The reconstructed workflow handles class imbalance with **class weighting**, while the earlier exploratory workflow used **SMOTE**. These are different approaches, and their results should not be mixed or presented as coming from the same configuration.
+
+For reproducible experiments, record the dataset version, split strategy, random seed, preprocessing configuration, library versions, model parameters, and evaluation outputs.
+
+## Reproducibility and Provenance
+
+`src/preprocess_final.py` and `src/train_final.py` were reconstructed from the documented methodology, parameters, and reported results, because the original experiment's source code was unavailable when this repository was assembled.
+
+`results/thesis_reported_metrics.json` and `outputs/evaluation_results_final.json` preserve the results reported from the original experiment. They are not claimed to have been reproduced by the reconstructed code.
+
+This separation makes it clear which results come from the original experiment, the earlier exploratory scripts, and the reconstructed workflow.
 
 ## Limitations
 
-- Running the full pipeline requires the original dataset, which is not
-  distributed with this repository.
-- The Flask prototype demonstrates the models on the static test split; it
-  reports response times as a preliminary functional measurement on a
-  local development machine, not a load/performance test, and its results
-  should not be read as a claim about production-scale throughput.
-- `compare_baselines.py` is optional and was added after the original
-  experiment; see its docstring for exactly what it can and cannot be used
-  to conclude.
+- The dataset must be downloaded separately from Kaggle.
+- The full pipeline requires the dataset and all dependencies.
+- The original source code and exact software environment were not recovered.
+- Reconstructed outputs may differ from the reported metrics.
+- The optional baseline comparison was added later and must be interpreted within its own assumptions.
+- The web app is a demonstration using static test data, not a real-time fraud detection service.
+- The project has not undergone comprehensive security, scalability, or operational testing.
+- Response times measured in the prototype are preliminary local measurements, not performance benchmarks.
+
+## Future Improvements
+
+- Re-run and document the full pipeline in a clean environment
+- Add automated tests for preprocessing, training, evaluation, and web endpoints
+- Record verified experiment configurations and results in machine-readable reports
+- Tune classification thresholds against explicit false-positive and false-negative costs
+- Add model monitoring and drift detection for real-world deployment
+- Strengthen security and operational testing before any production use
+
+## Dataset Attribution
+
+Dataset: [Credit Card Fraud Detection](https://www.kaggle.com/mlg-ulb/creditcardfraud), ULB Machine Learning Group / Worldline, via Kaggle.
+
+Review the dataset's terms and licensing before redistributing the data. No ownership of the original dataset is claimed.
